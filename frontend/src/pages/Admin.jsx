@@ -1,22 +1,29 @@
-import { useEffect, useState } from "react";
-import axios from "../components/axiosInstance";
+import { Link } from "react-router-dom";
 
 function Admin() {
-  const [transactions, setTransactions] = useState([]);
-
-  useEffect(() => {
-    axios.get("/transactions/all")
-      .then(res => setTransactions(res.data));
-  }, []);
-
   return (
-    <div>
+    <div style={{ padding: "30px" }}>
       <h2>Admin Dashboard</h2>
-      {transactions.map(t => (
-        <div key={t._id}>
-          {t.type} - {t.amount}
-        </div>
-      ))}
+
+      <div style={{ marginTop: "20px", display: "flex", gap: "20px" }}>
+
+        <Link to="/users">
+          <button>View Users</button>
+        </Link>
+
+        <Link to="/orders">
+          <button>View Orders</button>
+        </Link>
+
+        <Link to="/transactions">
+          <button>View Transactions</button>
+        </Link>
+
+        <Link to="/admin-stocks">
+          <button>Manage Stocks</button>
+        </Link>
+
+      </div>
     </div>
   );
 }
