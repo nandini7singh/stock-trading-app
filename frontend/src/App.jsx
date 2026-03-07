@@ -16,15 +16,16 @@ import Users from "./pages/Users";
 import AllOrders from "./pages/AllOrders";
 import AllTransactions from "./pages/AllTransactions";
 import AdminStockChart from "./pages/AdminStockChart";
+import AdminRoute from "./components/AdminRoute";
+import AdminStocks from "./pages/AdminStocks";
 
 function App() {
   return (
     <>
-      <Navbar />
 
       <Routes>
-
         {/* Public Pages */}
+        <Route element={<><Navbar /></>}></Route>
         <Route path="/" element={<Landing />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
@@ -37,12 +38,59 @@ function App() {
         <Route path="/stock/:id" element={<StockChart />} />
 
         {/* Admin Panel */}
-        <Route path="/admin" element={<Admin />} />
-        <Route path="/admin-stocks" element={<AdminStockChart />} />
-        <Route path="/users" element={<Users />} />
-        <Route path="/all-orders" element={<AllOrders />} />
-        <Route path="/all-transactions" element={<AllTransactions />} />
+        <Route
+          path="/admin"
+          element={
+            <AdminRoute>
+              <Admin />
+            </AdminRoute>
+          }
+        />
 
+        <Route
+          path="/users"
+          element={
+            <AdminRoute>
+              <Users />
+            </AdminRoute>
+          }
+        />
+
+        <Route
+          path="/all-orders"
+          element={
+            <AdminRoute>
+              <AllOrders />
+            </AdminRoute>
+          }
+        />
+
+        <Route
+          path="/all-transactions"
+          element={
+            <AdminRoute>
+              <AllTransactions />
+            </AdminRoute>
+          }
+        />
+        <Route
+          path="/stocks-management"
+          element={
+          
+              <AdminStocks />
+          
+          }
+        
+        />
+        <Route
+          path="/chart"
+          element={
+          
+              <AdminStockChart />
+          
+          }
+        
+        />
       </Routes>
     </>
   );

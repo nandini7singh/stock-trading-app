@@ -3,28 +3,23 @@ import { useState, useEffect } from "react";
 import { jwtDecode } from "jwt-decode";
 
 function Navbar() {
-
   const [isAdmin, setIsAdmin] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
-
     const token = localStorage.getItem("token");
 
     if (token) {
       try {
-
         const decoded = jwtDecode(token);
 
         if (decoded.role === "admin") {
           setIsAdmin(true);
         }
-
       } catch (error) {
         console.log("Invalid token");
       }
     }
-
   }, []);
 
   const logout = () => {
@@ -33,37 +28,55 @@ function Navbar() {
   };
 
   return (
+    <nav className="bg-[#1b1325] text-white px-10 py-4 flex items-center justify-between">
 
-    <div className="bg-blue-600 text-white px-6 py-3 flex justify-between items-center shadow-md">
-
-      <h2 className="font-bold text-lg">SB Stocks</h2>
-
-      <div className="flex gap-6 items-center">
-
-        <Link to="/home" className="hover:underline">Home</Link>
-        <Link to="/portfolio" className="hover:underline">Portfolio</Link>
-        <Link to="/history" className="hover:underline">History</Link>
-        <Link to="/profile" className="hover:underline">Profile</Link>
-
-        {isAdmin && (
-          <>
-            <Link to="/admin/users" className="hover:underline">Users</Link>
-            <Link to="/admin/orders" className="hover:underline">Orders</Link>
-            <Link to="/admin/stocks" className="hover:underline">Stocks</Link>
-          </>
-        )}
-
-        <button
-          onClick={logout}
-          className="bg-red-500 px-4 py-1 rounded hover:bg-red-600 transition"
-        >
-          Logout
-        </button>
-
+      {/* Logo */}
+      <div className="flex items-center gap-2 font-semibold text-lg">
+        <div className="w-7 h-7 bg-purple-600 rounded flex items-center justify-center">
+          <span className="text-xs font-bold">↗</span>
+        </div>
+        SB Stocks
       </div>
 
-    </div>
+      {/* Center Links */}
+      <div className="hidden md:flex gap-8 text-gray-300 text-sm">
+        <Link to="/markets" className="hover:text-white transition">
+          Markets
+        </Link>
+        <Link to="/features" className="hover:text-white transition">
+          Features
+        </Link>
+        <Link to="/pricing" className="hover:text-white transition">
+          Pricing
+        </Link>
+        <Link to="/education" className="hover:text-white transition">
+          Education
+        </Link>
+      </div>
 
+      {/* Right Section */}
+      <div className="flex items-center gap-5">
+
+        <Link
+          to="/login"
+          className="text-gray-300 text-sm hover:text-white transition"
+        >
+          Log In
+        </Link>
+
+        <Link
+          to="/signup"
+          className="bg-purple-700 hover:bg-purple-600 px-4 py-2 rounded-md text-sm font-medium transition"
+        >
+          Start Trading
+        </Link>
+
+        
+
+        
+
+      </div>
+    </nav>
   );
 }
 
