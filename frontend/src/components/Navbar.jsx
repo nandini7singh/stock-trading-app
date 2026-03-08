@@ -4,23 +4,26 @@ import { jwtDecode } from "jwt-decode";
 
 function Navbar() {
   const [isAdmin, setIsAdmin] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
-    const token = localStorage.getItem("token");
+  const token = localStorage.getItem("token");
 
-    if (token) {
-      try {
-        const decoded = jwtDecode(token);
+  if (token) {
+    setIsLoggedIn(true);
 
-        if (decoded.role === "admin") {
-          setIsAdmin(true);
-        }
-      } catch (error) {
-        console.log("Invalid token");
+    try {
+      const decoded = jwtDecode(token);
+
+      if (decoded.role === "admin") {
+        setIsAdmin(true);
       }
+    } catch (error) {
+      console.log("Invalid token");
     }
-  }, []);
+  }
+}, []);
 
   const logout = () => {
     localStorage.removeItem("token");
@@ -57,25 +60,41 @@ function Navbar() {
       {/* Right Section */}
       <div className="flex items-center gap-5">
 
-        <Link
-          to="/login"
-          className="text-gray-300 text-sm hover:text-white transition"
-        >
-          Log In
-        </Link>
+{!isLoggedIn ? (
+  <>
+    <Link
+      to="/login"
+      className="text-gray-300 text-sm hover:text-white transition"
+    >
+      Log In
+    </Link>
 
-        <Link
-          to="/signup"
-          className="bg-purple-700 hover:bg-purple-600 px-4 py-2 rounded-md text-sm font-medium transition"
-        >
-          Start Trading
-        </Link>
+    <Link
+      to="/register"
+      className="bg-purple-700 hover:bg-purple-600 px-4 py-2 rounded-md text-sm font-medium transition"
+    >
+      Start Trading
+    </Link>
+  </>
+) : (
+  <>
+    <Link
+      to="/profile"
+      className="text-gray-300 text-sm hover:text-white"
+    >
+      Profile
+    </Link>
 
-        
+    <button
+      onClick={logout}
+      className="bg-red-600 hover:bg-red-500 px-4 py-2 rounded-md text-sm"
+    >
+      Logout
+    </button>
+  </>
+)}
 
-        
-
-      </div>
+</div>
     </nav>
   );
 }

@@ -9,36 +9,35 @@ function Login() {
   const [password,setPassword] = useState("");
   const navigate = useNavigate();
 
-  const submitHandler = async (e) => {
-    e.preventDefault();
+const submitHandler = async (e) => {
+  e.preventDefault();
 
-    try {
+  try {
 
-      const res = await axios.post("/users/login",{
-        email,
-        password
-      });
+    const res = await axios.post("/users/login",{
+      email,
+      password
+    });
 
-      const token = res.data.token;
+    const token = res.data.token;
 
-      // save token
-localStorage.setItem("token", res.data.token);
-      // decode token
-      const decoded = jwtDecode(token);
+    // save token
+    localStorage.setItem("token", token);
 
-      alert("Login Success ✅");
+    const decoded = jwtDecode(token);
 
-      // role based redirect
-      if(decoded.role === "admin"){
-        navigate("/admin");
-      }else{
-        navigate("/home");
-      }
+    alert("Login Success ✅");
 
-    } catch (err) {
-      alert("Login Failed ❌");
+    if(decoded.role === "admin"){
+      navigate("/admin");
+    } else {
+      navigate("/home");   // 👈 this redirects to homepage
     }
-  };
+
+  } catch (err) {
+    alert("Login Failed ❌");
+  }
+};
 
   return (
 
