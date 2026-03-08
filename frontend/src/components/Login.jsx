@@ -13,29 +13,19 @@ const submitHandler = async (e) => {
   e.preventDefault();
 
   try {
-
-    const res = await axios.post("/users/login",{
+    const res = await axios.post("/users/login", {
       email,
       password
     });
 
-    const token = res.data.token;
-
     // save token
-    localStorage.setItem("token", token);
+    localStorage.setItem("token", res.data.token);
 
-    const decoded = jwtDecode(token);
-
-    alert("Login Success ✅");
-
-    if(decoded.role === "admin"){
-      navigate("/admin");
-    } else {
-      navigate("/home");   // 👈 this redirects to homepage
-    }
+    // go to home dashboard
+    navigate("/home");
 
   } catch (err) {
-    alert("Login Failed ❌");
+    alert("Login failed");
   }
 };
 

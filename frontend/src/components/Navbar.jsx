@@ -8,38 +8,38 @@ function Navbar() {
   const navigate = useNavigate();
 
   useEffect(() => {
-  const token = localStorage.getItem("token");
+    const token = localStorage.getItem("token");
 
-  if (token) {
-    setIsLoggedIn(true);
+    if (token) {
+      setIsLoggedIn(true);
 
-    try {
-      const decoded = jwtDecode(token);
+      try {
+        const decoded = jwtDecode(token);
 
-      if (decoded.role === "admin") {
-        setIsAdmin(true);
+        if (decoded.role === "admin") {
+          setIsAdmin(true);
+        }
+      } catch {
+        setIsLoggedIn(false);
       }
-    } catch (error) {
-      console.log("Invalid token");
     }
-  }
-}, []);
+  }, []);
 
   const logout = () => {
-    localStorage.removeItem("token");
-    navigate("/login");
+  localStorage.removeItem("token");
+  window.location.href = "/";
   };
 
   return (
     <nav className="bg-[#1b1325] text-white px-10 py-4 flex items-center justify-between">
 
       {/* Logo */}
-      <div className="flex items-center gap-2 font-semibold text-lg">
+      <Link to="/" className="flex items-center gap-2 font-semibold text-lg">
         <div className="w-7 h-7 bg-purple-600 rounded flex items-center justify-center">
           <span className="text-xs font-bold">↗</span>
         </div>
         SB Stocks
-      </div>
+      </Link>
 
       {/* Center Links */}
       <div className="hidden md:flex gap-8 text-gray-300 text-sm">
@@ -60,41 +60,49 @@ function Navbar() {
       {/* Right Section */}
       <div className="flex items-center gap-5">
 
-{!isLoggedIn ? (
-  <>
-    <Link
-      to="/login"
-      className="text-gray-300 text-sm hover:text-white transition"
-    >
-      Log In
-    </Link>
+        {!isLoggedIn ? (
+          <>
+            <Link
+              to="/login"
+              className="text-gray-300 text-sm hover:text-white transition"
+            >
+              Log In
+            </Link>
 
-    <Link
-      to="/register"
-      className="bg-purple-700 hover:bg-purple-600 px-4 py-2 rounded-md text-sm font-medium transition"
-    >
-      Start Trading
-    </Link>
-  </>
-) : (
-  <>
-    <Link
-      to="/profile"
-      className="text-gray-300 text-sm hover:text-white"
-    >
-      Profile
-    </Link>
+            <Link
+              to="/register"
+              className="bg-purple-700 hover:bg-purple-600 px-4 py-2 rounded-md text-sm font-medium transition"
+            >
+              Start Trading
+            </Link>
+          </>
+        ) : isAdmin ? (
+          <Link
+            to="/admin"
+            className="bg-purple-700 hover:bg-purple-600 px-4 py-2 rounded-md text-sm"
+          >
+            Admin Panel
+          </Link>
+        ) : (
+          <>
+            <Link
+              to="/profile"
+              className="text-gray-300 text-sm hover:text-white"
+            >
+              Profile
+            </Link>
 
-    <button
-      onClick={logout}
-      className="bg-red-600 hover:bg-red-500 px-4 py-2 rounded-md text-sm"
-    >
-      Logout
-    </button>
-  </>
-)}
+            <button
+              onClick={logout}
+              className="bg-red-600 hover:bg-red-500 px-4 py-2 rounded-md text-sm"
+            >
+              Logout
+            </button>
+          </>
+        )}
 
-</div>
+      </div>
+
     </nav>
   );
 }

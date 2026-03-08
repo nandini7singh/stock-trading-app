@@ -1,6 +1,5 @@
-import { Routes, Route, Navigate } from "react-router-dom";
+import { Routes, Route, Navigate, useLocation } from "react-router-dom";
 
-import Navbar from "./components/Navbar";
 import Login from "./components/Login";
 import Register from "./components/Register";
 
@@ -10,11 +9,6 @@ import Portfolio from "./pages/Portfolio";
 import MarketWatch from "./pages/MarketWatch";
 import History from "./pages/History";
 import Profile from "./pages/Profile";
-
-import Markets from "./pages/Markets";
-import Features from "./pages/Features";
-import Pricing from "./pages/Pricing";
-import Education from "./pages/Education";
 
 import Admin from "./pages/Admin";
 import Users from "./pages/Users";
@@ -30,22 +24,36 @@ const isLoggedIn = () => {
 };
 
 function App() {
+
+  const location = useLocation();
+
+  const hideNavbarRoutes = [
+    "/home",
+    "/portfolio",
+    "/marketwatch",
+    "/history",
+    "/profile",
+    "/admin",
+    "/users",
+    "/all-orders",
+    "/all-transactions"
+  ];
+
   return (
     <>
-      <Navbar />
-
       <Routes>
 
-        {/* Public Pages */}
-        <Route path="/" element={<Landing />} />
+        {/* Landing */}
+        <Route
+          path="/"
+          element={isLoggedIn() ? <Navigate to="/home" /> : <Landing />}
+        />
+        
+        {/* Auth */}
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
-        <Route path="/markets" element={<Markets />} />
-        <Route path="/features" element={<Features />} />
-        <Route path="/pricing" element={<Pricing />} />
-        <Route path="/education" element={<Education />} />
 
-        {/* User Dashboard */}
+        {/* Dashboard */}
 
         <Route
           path="/home"
@@ -74,7 +82,7 @@ function App() {
 
         <Route path="/stock/:id" element={<Navigate to="/marketwatch" />} />
 
-        {/* Admin Panel */}
+        {/* Admin */}
 
         <Route
           path="/admin"
@@ -112,17 +120,11 @@ function App() {
           }
         />
 
-        <Route
-          path="/stocks-management"
-          element={<AdminStocks />}
-        />
-
-        <Route
-          path="/chart"
-          element={<AdminStockChart />}
-        />
+        <Route path="/stocks-management" element={<AdminStocks />} />
+        <Route path="/chart" element={<AdminStockChart />} />
 
       </Routes>
+
     </>
   );
 }

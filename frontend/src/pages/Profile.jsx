@@ -1,12 +1,19 @@
 import { useEffect, useState } from "react";
 import axios from "../components/axiosInstance";
 import Sidebar from "../components/Sidebar";
+import { useNavigate } from "react-router-dom";
 
 function Profile() {
 
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [activeNav, setActiveNav] = useState("Settings");
+
+  const navigate = useNavigate();
+  const logout = () => {
+    localStorage.removeItem("token");
+    navigate("/login");
+  };
 
   useEffect(() => {
 
@@ -62,6 +69,22 @@ function Profile() {
           <p style={{fontSize:"18px", marginTop:"10px"}}>
             <b>Balance:</b> ₹{user?.balance || 5000}
           </p>
+
+          <button
+          onClick={logout}
+          style={{
+          marginTop:"20px",
+          padding:"10px 16px",
+          background:"#ff4d4d",
+          border:"none",
+          borderRadius:"8px",
+          color:"#fff",
+          cursor:"pointer",
+          fontWeight:"600"
+          }}
+          >
+            Logout
+          </button>
 
         </div>
 
