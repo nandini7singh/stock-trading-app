@@ -1,4 +1,4 @@
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, Navigate} from "react-router-dom";
 
 import Navbar from "./components/Navbar";
 import Login from "./components/Login";
@@ -7,9 +7,9 @@ import Register from "./components/Register";
 import Landing from "./pages/Landing";
 import Home from "./pages/Home";
 import Portfolio from "./pages/Portfolio";
+import MarketWatch from "./pages/MarketWatch";
 import History from "./pages/History";
 import Profile from "./pages/Profile";
-import StockChart from "./pages/StockChart";
 
 import Admin from "./pages/Admin";
 import Users from "./pages/Users";
@@ -33,9 +33,11 @@ function App() {
         {/* User Dashboard */}
         <Route path="/home" element={<Home />} />
         <Route path="/portfolio" element={<Portfolio />} />
+        <Route path="/marketwatch" element={<MarketWatch />} />
         <Route path="/history" element={<History />} />
         <Route path="/profile" element={<Profile />} />
-        <Route path="/stock/:id" element={<StockChart />} />
+
+        <Route path="/stock/:id" element={<Navigate to="/marketwatch" />} />
 
         {/* Admin Panel */}
         <Route

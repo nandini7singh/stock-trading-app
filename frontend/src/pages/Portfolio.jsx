@@ -1,81 +1,288 @@
 import { useEffect, useState } from "react";
 import axios from "../components/axiosInstance";
 import { Link } from "react-router-dom";
+import Sidebar from "../components/Sidebar";
+import { Search, Bell } from "lucide-react";
+
+const C = {
+  bg: "#0d0d14",
+  surface: "#13131f",
+  card: "#181826",
+  border: "#252538",
+  text: "#e8e8f0",
+  muted: "#6b6b8a",
+  green: "#00e676",
+};
 
 function Portfolio() {
 
-  const [orders, setOrders] = useState([]);
+  const [portfolio, setPortfolio] = useState([]);
+  const [totalValue,setTotalValue] = useState(0);
+  const [activeNav,setActiveNav] = useState("Portfolio");
 
   useEffect(() => {
+
     axios.get("/orders")
-      .then(res => setOrders(res.data))
-      .catch(err => console.log(err));
+    .then(res => {
+
+      const orders = res.data;
+      const portfolioMap = {};
+
+      orders.forEach(order => {
+
+        const symbol = order.stock.symbol;
+
+        if(!portfolioMap[symbol]){
+
+          portfolioMap[symbol] = {
+            name:order.stock.name,
+            symbol:order.stock.symbol,
+            shares:0,
+            price:order.stock.price
+          };
+
+        }
+
+        if(order.type === "buy"){
+          portfolioMap[symbol].shares += order.quantity;
+        }
+
+        if(order.type === "sell"){
+          portfolioMap[symbol].shares -= order.quantity;
+        }
+
+      });
+
+      const portfolioArray =
+        Object.values(portfolioMap).filter(s => s.shares > 0);
+
+      setPortfolio(portfolioArray);
+
+      // calculate total value
+      let total = 0;
+
+      portfolioArray.forEach(stock=>{
+        total += stock.shares * stock.price;
+      });
+
+      setTotalValue(total);
+
+    })
+
+    .catch(err => console.log(err));
+
   }, []);
 
-  return (
 
-    <div className="p-10 bg-gray-50 min-h-screen">
+return (
 
-      <h2 className="text-2xl font-bold mb-6">My Portfolio</h2>
+<div style={{display:"flex",minHeight:"100vh",background:C.bg,color:C.text}}>
 
-      {orders.length === 0 ? (
-        <p>No trades yet</p>
-      ) : (
+{/* Sidebar */}
+<Sidebar activeNav={activeNav} onNavChange={setActiveNav}/>
 
-        <table className="w-full bg-white shadow rounded-lg">
+{/* Right side */}
+<div style={{flex:1,display:"flex",flexDirection:"column"}}>
 
-          <thead className="bg-gray-100">
-            <tr>
-              <th className="p-3">Stock</th>
-              <th>Stock Name</th>
-              <th>Symbol</th>
-              <th>Quantity</th>
-              <th>Total Value</th>
-              <th></th>
-            </tr>
-          </thead>
+{/* Topbar */}
+<header
+style={{
+background:C.surface,
+borderBottom:`1px solid ${C.border}`,
+padding:"0 28px",
+height:60,
+display:"flex",
+alignItems:"center",
+gap:16
+}}
+>
 
-          <tbody>
+<Search size={14} />
 
-            {orders.map(order => {
+<input
+placeholder="Search stocks..."
+style={{
+background:C.card,
+border:`1px solid ${C.border}`,
+padding:"6px 10px",
+borderRadius:8,
+color:C.text
+}}
+/>
 
-              const total = order.quantity * (order.stock?.price || 0);
+<div style={{marginLeft:"auto",display:"flex",alignItems:"center",gap:10}}>
+<span style={{color:C.green,fontSize:12}}>Market Open</span>
+<Bell size={18}/>
+</div>
 
-              return (
-                <tr key={order._id} className="border-t">
+</header>
 
-                  <td className="p-3">{order.stock?.symbol}</td>
+{/* Page Content */}
+<div style={{padding:"30px"}}>
 
-                  <td>{order.stock?.name}</td>
+<h2 style={{fontSize:"24px",marginBottom:"20px"}}>
+My Portfolio
+</h2>
 
-                  <td>{order.stock?.symbol}</td>
+{/* Portfolio Stats */}
 
-                  <td>{order.quantity}</td>
+<div style={{
+display:"grid",
+gridTemplateColumns:"1fr 1fr 1fr",
+gap:"20px",
+marginBottom:"30px"
+}}>
 
-                  <td>₹{total}</td>
+{/* TOTAL VALUE */}
+<div style={{
+background:C.card,
+border:`1px solid ${C.border}`,
+borderRadius:"14px",
+padding:"20px"
+}}>
 
-                  <td>
-                    <Link to={`/stock/${order.stock?._id}`}>
-                      <button className="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600">
-                        View Chart
-                      </button>
-                    </Link>
-                  </td>
+<p style={{color:C.muted,fontSize:"13px"}}>
+Total Portfolio Value
+</p>
 
-                </tr>
-              );
+<h2 style={{fontSize:"28px",marginTop:"10px"}}>
+${totalValue.toFixed(2)}
+</h2>
 
-            })}
+</div>
 
-          </tbody>
 
-        </table>
+{/* TODAY PROFIT (demo) */}
 
-      )}
+<div style={{
+background:C.card,
+border:`1px solid ${C.border}`,
+borderRadius:"14px",
+padding:"20px"
+}}>
 
-    </div>
+<p style={{color:C.muted,fontSize:"13px"}}>
+Today's P/L
+</p>
 
-  );
+<h2 style={{fontSize:"28px",marginTop:"10px",color:C.green}}>
++$0.00
+</h2>
+
+</div>
+
+
+{/* BUYING POWER */}
+
+<div style={{
+background:C.card,
+border:`1px solid ${C.border}`,
+borderRadius:"14px",
+padding:"20px"
+}}>
+
+<p style={{color:C.muted,fontSize:"13px"}}>
+Buying Power
+</p>
+
+<h2 style={{fontSize:"28px",marginTop:"10px"}}>
+$100000
+</h2>
+
+</div>
+
+</div>
+
+
+{/* Portfolio Table */}
+
+<table
+style={{
+width:"100%",
+background:C.card,
+border:`1px solid ${C.border}`,
+borderRadius:"12px"
+}}
+>
+
+<thead style={{background:C.surface,color:C.muted}}>
+<tr>
+<th style={{padding:"12px"}}>Stock</th>
+<th>Symbol</th>
+<th>Shares</th>
+<th>Price</th>
+<th>Total</th>
+<th></th>
+</tr>
+</thead>
+
+<tbody>
+
+{portfolio.map(stock => (
+
+<tr
+key={stock.symbol}
+style={{
+borderTop:`1px solid ${C.border}`
+}}
+>
+
+<td style={{padding:"12px"}}>
+{stock.name}
+</td>
+
+<td>
+{stock.symbol}
+</td>
+
+<td>
+{stock.shares}
+</td>
+
+<td>
+${stock.price}
+</td>
+
+<td style={{color:C.green,fontWeight:"600"}}>
+${(stock.shares * stock.price).toFixed(2)}
+</td>
+
+<td>
+
+<Link to="/marketwatch">
+
+<button
+style={{
+background:"#7c5cfc",
+border:"none",
+padding:"6px 12px",
+borderRadius:"8px",
+color:"#fff",
+cursor:"pointer"
+}}
+>
+View Chart
+</button>
+
+</Link>
+
+</td>
+
+</tr>
+
+))}
+
+</tbody>
+
+</table>
+
+</div>
+
+</div>
+
+</div>
+
+);
 }
 
 export default Portfolio;

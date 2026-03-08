@@ -1,10 +1,12 @@
 import { useEffect, useState } from "react";
 import axios from "../components/axiosInstance";
+import Sidebar from "../components/Sidebar";
 
 function Profile() {
 
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [activeNav, setActiveNav] = useState("Settings");
 
   useEffect(() => {
 
@@ -26,31 +28,47 @@ function Profile() {
   if (!user) return <p style={{padding:"30px"}}>No user data</p>;
 
   return (
-    <div style={{padding:"30px"}}>
 
-      <h2>My Account</h2>
+    <div style={{display:"flex", minHeight:"100vh", background:"#0d0d14", color:"#e8e8f0"}}>
 
-      <div
-        style={{
-          background:"#f5f5f5",
-          padding:"20px",
-          borderRadius:"10px",
-          width:"400px",
-          marginTop:"20px"
-        }}
-      >
+      {/* Sidebar */}
+      <Sidebar activeNav={activeNav} onNavChange={setActiveNav} />
 
-        <p><b>Name:</b> {user?.name}</p>
+      {/* Page Content */}
+      <div style={{padding:"40px", width:"100%"}}>
 
-        <p><b>Email:</b> {user?.email}</p>
+        <h2 style={{fontSize:"26px", marginBottom:"20px"}}>
+          My Account
+        </h2>
 
-        <p style={{fontSize:"18px", marginTop:"10px"}}>
-          <b>Balance:</b> ₹{user?.balance || 5000}
-        </p>
+        <div
+          style={{
+            background:"#181826",
+            padding:"30px",
+            borderRadius:"14px",
+            width:"420px",
+            border:"1px solid #252538"
+          }}
+        >
+
+          <p style={{marginBottom:"12px"}}>
+            <b>Name:</b> {user?.name}
+          </p>
+
+          <p style={{marginBottom:"12px"}}>
+            <b>Email:</b> {user?.email}
+          </p>
+
+          <p style={{fontSize:"18px", marginTop:"10px"}}>
+            <b>Balance:</b> ₹{user?.balance || 5000}
+          </p>
+
+        </div>
 
       </div>
 
     </div>
+
   );
 }
 

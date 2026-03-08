@@ -6,6 +6,7 @@ import {
   Settings,
   TrendingUp
 } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 const C = {
   surface: "#13131f",
@@ -27,6 +28,7 @@ const NAV = [
 ];
 
 export default function Sidebar({ activeNav, onNavChange }) {
+  const navigate = useNavigate();
   return (
     <aside
       style={{
@@ -80,7 +82,13 @@ export default function Sidebar({ activeNav, onNavChange }) {
         {NAV.map(({ icon: Icon, label }) => (
           <button
             key={label}
-            onClick={() => onNavChange(label)}
+            onClick={() => {
+              onNavChange(label);
+              if (label === "Dashboard") navigate("/home");
+              if (label === "Portfolio") navigate("/portfolio");
+              if (label === "Market Watch") navigate("/marketwatch");
+              if (label === "History") navigate("/history");
+            }}
             style={{
               width: "100%",
               display: "flex",
@@ -114,17 +122,18 @@ export default function Sidebar({ activeNav, onNavChange }) {
         </div>
 
         <button
-          style={{
-            width: "100%",
-            display: "flex",
-            alignItems: "center",
-            gap: 10,
-            padding: "11px 12px",
-            background: "none",
-            border: "none",
-            cursor: "pointer",
-            color: C.label,
-          }}
+        onClick={() => navigate("/profile")}
+        style={{
+           width: "100%",
+           display: "flex",
+           alignItems: "center",
+           gap: 10,
+           padding: "11px 12px",
+           background: "none",
+           border: "none",
+           cursor: "pointer",
+           color: C.label,
+           }}
         >
           <Settings size={17} />
           Settings
